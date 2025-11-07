@@ -6,6 +6,45 @@
     <title>WebSocket Chat</title>
 </head>
 <body>
+    <h2>WebSocket Chat App</h2>
+
+    <div id="chat"></div>
+
+    <div class="controls">
+        <input id="messageInput" placeholder="Type a message..." autocomplete="off"/>
+        <button id="sendBtn">Send message</button>
+    </div>
+    <script>
+        const socket=new WebSocket("ws://localhost:3000");
+
+        const chat = document.getElementById("chat");
+        const input=document.getElementById("messageInput");
+        const btn=document.getElementById("sendBtn");
+
+        socket.onopen=()=>addMsg(" Connected to Server");
+
+        socket.onmessage=(e)=>addMsg("Server:"+e.data);
+
+        socket.onclose=()=>addMsg("User disconnected");
+
+        btn.onclick=sendMessage;
+
+        function sendMessage(){
+            const msg=input.value.trim;
+            if(!msg) return;
+
+            socket.send(msg);
+            addMsg("You:"+msg);
+            input.value="";
+        }
+
+        function addMsg(text){
+            const div=document.getElementById("div");
+            div.textContent=text;
+            chat.appendChild(div);
+            chat.scrollTop=chat.scrollHeight;
+        }
     
+    </script>
 </body>
 </html>
